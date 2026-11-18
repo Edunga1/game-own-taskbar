@@ -1,11 +1,12 @@
 [gd_scene format=3 uid="uid://d132tc25ws3ac"]
 
-[ext_resource type="Script" uid="uid://34ro3d20pxb0" path="res://app.gd" id="1_app"]
+[ext_resource type="Script" uid="uid://34ro3d20pxb0" path="res://app/app.gd" id="1_app"]
+[ext_resource type="PackedScene" path="res://world/world.tscn" id="2_world"]
 
 [node name="App" type="Node2D" unique_id=1169504230]
 script = ExtResource("1_app")
 
-[node name="Sea" type="Polygon2D" parent="." unique_id=1493823359]
+[node name="World" parent="." instance=ExtResource("2_world")]
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=461109150]
 

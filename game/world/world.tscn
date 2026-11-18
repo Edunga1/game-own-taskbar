@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://world/world.gd" id="1_world"]
+[ext_resource type="Script" path="res://world/sea.gd" id="2_sea"]
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_world")
+
+[node name="Sea" type="Polygon2D" parent="."]
+color = Color(0.12, 0.45, 0.85, 1)
+script = ExtResource("2_sea")

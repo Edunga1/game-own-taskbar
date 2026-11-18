@@ -1,16 +1,16 @@
 extends Node2D
 
 @export_range(0.05, 1.0) var app_height := 0.25
-@export var sea_color := Color(0.12, 0.45, 0.85)
 
-@onready var sea: Polygon2D = $Sea
+@onready var world: World = $World
 @onready var on_top_check: CheckBox = %OnTopCheck
 @onready var close_button: Button = %CloseButton
 
 
 func _ready() -> void:
   var size := _fit_window_to_bottom()
-  _build_bg(size)
+  world.shape_changed.connect(_on_world_shape_changed)
+  world.setup(size)
   _setup_menu()
 
 
@@ -44,22 +44,5 @@ func _fit_window_to_bottom() -> Vector2i:
   return size
 
 
-func _build_bg(size: Vector2i) -> void:
-  var amplitude := size.y * 0.1
-  var points := PackedVector2Array()
-  var x := 0.0
-  while x < size.x:
-    points.append(Vector2(x, _wave_y(x, amplitude)))
-    x += 4.0
-  points.append(Vector2(size.x, _wave_y(size.x, amplitude)))
-  points.append(Vector2(size.x, size.y))
-  points.append(Vector2(0, size.y))
-
-  sea.polygon = points
-  sea.color = sea_color
-  get_window().mouse_passthrough_polygon = points
-
-
-func _wave_y(x: float, amplitude: float) -> float:
-  var t := x / 240.0 * TAU
-  return amplitude * (1.0 + 0.7 * sin(t) + 0.3 * sin(t * 2.3 + 1.0))
+func _on_world_shape_changed(shape: PackedVector2Array) -> void:
+  get_window().mouse_passthrough_polygon = shape
