@@ -1,16 +1,18 @@
 extends Node2D
 
-@export_range(0.05, 1.0) var app_height := 0.25
+var world_shape := PackedVector2Array()
 
 @onready var world: World = $World
+@onready var menu: HBoxContainer = $UI/Menu
 @onready var on_top_check: CheckBox = %OnTopCheck
 @onready var close_button: Button = %CloseButton
 
 
 func _ready() -> void:
-  var size := _fit_window_to_bottom()
+  var canvas_size := _cover_usable_screen()
   world.shape_changed.connect(_on_world_shape_changed)
-  world.setup(size)
+  menu.item_rect_changed.connect(_update_mouse_passthrough)
+  world.setup(canvas_size)
   _setup_menu()
 
 
@@ -32,17 +34,30 @@ func _on_on_top_toggled(enabled: bool) -> void:
   get_window().always_on_top = enabled
 
 
-func _fit_window_to_bottom() -> Vector2i:
-  var screen := DisplayServer.get_primary_screen()
-  var usable := DisplayServer.screen_get_usable_rect(screen)
-  var height := int(DisplayServer.screen_get_size(screen).y * app_height)
-  var size := Vector2i(usable.size.x, height)
-
+func _cover_usable_screen() -> Vector2i:
+  var usable := DisplayServer.screen_get_usable_rect(DisplayServer.get_primary_screen())
+  # Matching the work area exactly makes Godot flip the window height on every passthrough update.
+  var canvas := usable.grow_side(SIDE_TOP, -1)
   var window := get_window()
-  window.size = size
-  window.position = Vector2i(usable.position.x, usable.end.y - height)
-  return size
+  window.position = canvas.position
+  window.size = canvas.size
+  return canvas.size
 
 
 func _on_world_shape_changed(shape: PackedVector2Array) -> void:
-  get_window().mouse_passthrough_polygon = shape
+  world_shape = shape
+  _update_mouse_passthrough()
+
+
+func _update_mouse_passthrough() -> void:
+  var menu_rect := menu.get_global_rect()
+  var menu_shape := PackedVector2Array([
+    menu_rect.position,
+    Vector2(menu_rect.end.x, menu_rect.position.y),
+    menu_rect.end,
+    Vector2(menu_rect.position.x, menu_rect.end.y),
+  ])
+  var merged := Geometry2D.merge_polygons(world_shape, menu_shape)
+  if merged.is_empty():
+    return
+  get_window().mouse_passthrough_polygon = merged[0]

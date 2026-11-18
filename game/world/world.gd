@@ -3,9 +3,9 @@ extends Node2D
 
 signal shape_changed(shape: PackedVector2Array)
 
-@onready var sea: Sea = $Sea
+@onready var ground: Ground = $Ground
 
 
-func setup(size: Vector2i) -> void:
-  sea.build(size)
-  shape_changed.emit(sea.polygon)
+func setup(canvas_size: Vector2i) -> void:
+  ground.build(canvas_size)
+  shape_changed.emit(ground.polygon)
