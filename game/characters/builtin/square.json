@@ -1,0 +1,7 @@
+{
+  "id": "square",
+  "shape": "square",
+  "size": 30,
+  "color": "#4ecb71",
+  "speed": 35
+}
