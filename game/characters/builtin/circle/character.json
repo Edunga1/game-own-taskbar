@@ -1,0 +1,9 @@
+{
+  "speed": 50,
+  "look": {
+    "type": "shape",
+    "shape": "circle",
+    "size": 32,
+    "color": "#f5c542"
+  }
+}

@@ -1,27 +1,36 @@
 class_name CharacterData
 extends RefCounted
 
+const MANIFEST_FILE := "character.json"
+
 var id: String
-var shape: String
-var size: float
-var color: Color
+var dir: String
 var speed: float
+var look: Dictionary
 
 
 static func load_dir(dir: String) -> Array[CharacterData]:
   var result: Array[CharacterData] = []
-  for file in DirAccess.get_files_at(dir):
-    if file.get_extension() == "json":
-      var text := FileAccess.get_file_as_string(dir.path_join(file))
-      result.append(from_dict(JSON.parse_string(text)))
+  for child in DirAccess.get_directories_at(dir):
+    var path := dir.path_join(child)
+    var dict = JSON.parse_string(FileAccess.get_file_as_string(path.path_join(MANIFEST_FILE)))
+    if dict is Dictionary:
+      result.append(from_dict(dict, path))
+    else:
+      push_error("Invalid character manifest: %s" % path)
   return result
 
 
-static func from_dict(dict: Dictionary) -> CharacterData:
+static func from_dict(dict: Dictionary, character_dir: String) -> CharacterData:
   var data := CharacterData.new()
-  data.id = dict.id
-  data.shape = dict.shape
-  data.size = dict.size
-  data.color = Color(dict.color)
+  data.id = character_dir.get_file()
+  data.dir = character_dir
   data.speed = dict.speed
+  data.look = dict.look
   return data
+
+
+func create_look() -> Look:
+  if look.type == "sprite":
+    return SpriteLook.new(look, dir)
+  return ShapeLook.new(look)

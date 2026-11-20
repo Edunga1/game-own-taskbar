@@ -1,0 +1,9 @@
+{
+  "speed": 70,
+  "look": {
+    "type": "shape",
+    "shape": "triangle",
+    "size": 36,
+    "color": "#ef5d60"
+  }
+}

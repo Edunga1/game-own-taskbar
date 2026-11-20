@@ -1,0 +1,9 @@
+{
+  "speed": 35,
+  "look": {
+    "type": "shape",
+    "shape": "square",
+    "size": 30,
+    "color": "#4ecb71"
+  }
+}

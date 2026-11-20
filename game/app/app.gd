@@ -1,5 +1,8 @@
 extends Node2D
 
+const BUILTIN_CHARACTERS_DIR := "res://characters/builtin"
+const EXTENSION_CHARACTERS_DIR := "user://characters"
+
 var world_shape := PackedVector2Array()
 
 @onready var world: World = $World
@@ -12,7 +15,7 @@ func _ready() -> void:
   var canvas_size := _cover_usable_screen()
   world.shape_changed.connect(_on_world_shape_changed)
   menu.item_rect_changed.connect(_update_mouse_passthrough)
-  world.setup(canvas_size)
+  world.setup(canvas_size, _load_characters())
   _setup_menu()
 
 
@@ -28,6 +31,14 @@ func _setup_menu() -> void:
   )
   on_top_check.toggled.connect(_on_on_top_toggled)
   close_button.pressed.connect(get_tree().quit)
+
+
+func _load_characters() -> Array[CharacterData]:
+  DirAccess.make_dir_recursive_absolute(EXTENSION_CHARACTERS_DIR)
+  var extensions := CharacterData.load_dir(EXTENSION_CHARACTERS_DIR)
+  if extensions.is_empty():
+    return CharacterData.load_dir(BUILTIN_CHARACTERS_DIR)
+  return extensions
 
 
 func _on_on_top_toggled(enabled: bool) -> void:
