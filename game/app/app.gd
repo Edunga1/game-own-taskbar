@@ -4,9 +4,11 @@ const BUILTIN_CHARACTERS_DIR := "res://characters/builtin"
 const EXTENSION_CHARACTERS_DIR := "user://characters"
 
 var world_shape := PackedVector2Array()
+var drag_offset := Vector2i.ZERO
 
 @onready var world: World = $World
 @onready var menu: HBoxContainer = $UI/Menu
+@onready var move_handle: Button = %MoveHandle
 @onready var on_top_check: CheckBox = %OnTopCheck
 @onready var close_button: Button = %CloseButton
 
@@ -31,6 +33,7 @@ func _setup_menu() -> void:
   )
   on_top_check.toggled.connect(_on_on_top_toggled)
   close_button.pressed.connect(get_tree().quit)
+  move_handle.gui_input.connect(_on_move_handle_gui_input)
 
 
 func _load_characters() -> Array[CharacterData]:
@@ -43,6 +46,15 @@ func _load_characters() -> Array[CharacterData]:
 
 func _on_on_top_toggled(enabled: bool) -> void:
   get_window().always_on_top = enabled
+
+
+func _on_move_handle_gui_input(event: InputEvent) -> void:
+  var button := event as InputEventMouseButton
+  var motion := event as InputEventMouseMotion
+  if button and button.button_index == MOUSE_BUTTON_LEFT and button.pressed:
+    drag_offset = DisplayServer.mouse_get_position() - get_window().position
+  elif motion and motion.button_mask & MOUSE_BUTTON_MASK_LEFT:
+    get_window().position = DisplayServer.mouse_get_position() - drag_offset
 
 
 func _cover_usable_screen() -> Vector2i:

@@ -29,6 +29,15 @@ layout_mode = 2
 focus_mode = 0
 text = "On Top"
 
+[node name="MoveHandle" type="Button" parent="UI/Menu"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+tooltip_text = "Move"
+focus_mode = 0
+mouse_default_cursor_shape = 13
+text = "✥"
+
 [node name="CloseButton" type="Button" parent="UI/Menu" unique_id=102866582]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 0)
