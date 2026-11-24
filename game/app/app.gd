@@ -8,6 +8,8 @@ var drag_offset := Vector2i.ZERO
 
 @onready var world: World = $World
 @onready var menu: HBoxContainer = $UI/Menu
+@onready var load_button: Button = %LoadButton
+@onready var character_dialog: FileDialog = %CharacterDialog
 @onready var move_handle: Button = %MoveHandle
 @onready var on_top_check: CheckBox = %OnTopCheck
 @onready var close_button: Button = %CloseButton
@@ -34,6 +36,8 @@ func _setup_menu() -> void:
   on_top_check.toggled.connect(_on_on_top_toggled)
   close_button.pressed.connect(get_tree().quit)
   move_handle.gui_input.connect(_on_move_handle_gui_input)
+  load_button.pressed.connect(character_dialog.popup)
+  character_dialog.dir_selected.connect(_on_character_dir_selected)
 
 
 func _load_characters() -> Array[CharacterData]:
@@ -42,6 +46,13 @@ func _load_characters() -> Array[CharacterData]:
   if extensions.is_empty():
     return CharacterData.load_dir(BUILTIN_CHARACTERS_DIR)
   return extensions
+
+
+func _on_character_dir_selected(source_dir: String) -> void:
+  if CharacterData.install(source_dir, EXTENSION_CHARACTERS_DIR) > 0:
+    world.show_characters(_load_characters())
+  else:
+    OS.alert("No character folder found in the selected folder.", "Load Character")
 
 
 func _on_on_top_toggled(enabled: bool) -> void:

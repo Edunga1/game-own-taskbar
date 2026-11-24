@@ -23,6 +23,14 @@ offset_bottom = -10.0
 grow_horizontal = 0
 grow_vertical = 0
 
+[node name="LoadButton" type="Button" parent="UI/Menu"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+tooltip_text = "Load Character"
+focus_mode = 0
+text = "+"
+
 [node name="OnTopCheck" type="CheckBox" parent="UI/Menu" unique_id=449856525]
 unique_name_in_owner = true
 layout_mode = 2
@@ -45,3 +53,9 @@ layout_mode = 2
 tooltip_text = "Close"
 focus_mode = 0
 text = "×"
+
+[node name="CharacterDialog" type="FileDialog" parent="UI"]
+unique_name_in_owner = true
+file_mode = 2
+access = 2
+use_native_dialog = true

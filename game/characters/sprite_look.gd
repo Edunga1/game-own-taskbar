@@ -8,6 +8,15 @@ var frame_size := Vector2.ZERO
 var directions := {}
 
 
+static func used_files(look: Dictionary, dir: String) -> PackedStringArray:
+  var files := PackedStringArray()
+  for sheet: String in look.sheets:
+    var meta: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(dir.path_join(sheet)))
+    files.append(sheet)
+    files.append(sheet.get_base_dir().path_join(meta.image))
+  return files
+
+
 func _init(look: Dictionary, dir: String) -> void:
   scale = Vector2.ONE * look.get("scale", 1.0)
   sprite.sprite_frames = SpriteFrames.new()
